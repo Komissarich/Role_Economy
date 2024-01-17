@@ -27,7 +27,13 @@ class Country{
 }
 
 class Market {
+    constructor() {
 
+    }
+
+    sell_request() {
+        
+    }
 }
 
 class City {
@@ -150,6 +156,12 @@ class Farming extends Household {
        super()
     }
 
+    sell() {
+        for (let i = this.storage.get("wheat"); i > -1; i = i - 1) {
+            
+        }
+    }
+
 
 }
 
@@ -207,8 +219,12 @@ class Livestock extends Household {
         
     }
 
+    consumption() {
+        super()
+    }
 
+    sell() {
 
-
+    }
 
 }
