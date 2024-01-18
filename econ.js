@@ -233,6 +233,7 @@ class Livestock extends Household {
 }
 class Militarycamp extends Household{
     constructor(){
+        super()
         
     }
     
@@ -251,7 +252,7 @@ class Militarycamp extends Household{
         }
         else{
             this.money += this.lvl * 0.5
-            this.City.money -= this.lvl * 0.5
+            this.city.money -= this.lvl * 0.5
         }
 
         if (this.storage.get("wheat") == 0) {
