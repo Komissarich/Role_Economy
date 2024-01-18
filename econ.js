@@ -279,7 +279,7 @@ class Militarycamp extends Household{
     production(){
         switch (this.lvl) {
             case 0:
-                if (this.storage.get("wheat") < 1) {
+                if (this.city.storage.get("wheat") < 1) {
                     console.log(`ополченцам не хватает еды в ${this.name} 4 ополченца не хотят воевать, милорд`)
                 }
                 else {
