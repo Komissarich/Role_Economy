@@ -247,7 +247,7 @@ class Militarycamp extends Household{
         this.name = "Militarycamp" + this.city.name + "_" + x
     }
     pre_purchase() {
-        if(this.City.money < this.lvl * 0.5){
+        if(this.сity.money < this.lvl * 0.5){
             console.log(`Не хватает денег для воина в ${this.name}, милорд`)
         }
         else{
@@ -279,7 +279,7 @@ class Militarycamp extends Household{
     production(){
         switch (this.lvl) {
             case 0:
-                if (this.City.storage.get("wheat") < 1) {
+                if (this.storage.get("wheat") < 1) {
                     console.log(`ополченцам не хватает еды в ${this.name} 4 ополченца не хотят воевать, милорд`)
                 }
                 else {
