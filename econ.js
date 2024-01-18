@@ -232,11 +232,8 @@ class Livestock extends Household {
 
 }
 class Militarycamp extends Household{
-    constructor(lvl, money, storage, City){
-        this.storage = storage
-        this.money = money
-        this.lvl = lvl
-        this.City = City
+    constructor(){
+        
     }
     
     set_name() {
@@ -249,6 +246,14 @@ class Militarycamp extends Household{
         this.name = "Militarycamp" + this.city.name + "_" + x
     }
     pre_purchase() {
+        if(this.City.money < this.lvl * 0.5){
+            console.log(`Не хватает денег для воина в ${this.name}, милорд`)
+        }
+        else{
+            this.money += this.lvl * 0.5
+            this.City.money -= this.lvl * 0.5
+        }
+
         if (this.storage.get("wheat") == 0) {
             console.log(`военный домик ${this.name} пытается купить пшеницу, милорд`)
             let trans = this.buy("wheat")
@@ -274,63 +279,42 @@ class Militarycamp extends Household{
         switch (this.lvl) {
             case 0:
                 if (this.City.storage.get("wheat") < 1) {
-                    this.pre_purchase
+                    console.log(`ополченцам не хватает еды в ${this.name} 4 ополченца не хотят воевать, милорд`)
                 }
                 else {
                     console.log(`Лагерь ополчения ${this.name} произвел 4 ополченца, милорд`)
-                    this.City.storage.set("wheat", this.City.storage.get("wheat") - 1)
-                    this.City.storage.set("recruits1", this.City.storage.get("recruits1") + 4)
+                    this.storage.set("wheat", this.storage.get("wheat") - 1)
+                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
                 }
                 break;
             case 1:
-                if(this.City.money < this.lvl * 0.5){
-                    console.log(`Не хватает денег для воина в ${this.name}, милорд`)
-                }
-                else{
-                    this.money += this.lvl * 0.5
-                    this.City.money -= this.lvl * 0.5
-                }
                 if (this.storage.get("wheat") < 1) {
-                    this.pre_purchase
+                    console.log(`воинам не хватает еды в ${this.name} 4 воина не хотят воевать, милорд`)
                 }
                 else {
                     console.log(`Лагерь воинов ${this.name} произвел 4 воина, милорд`)
-                    this.storage.set("wheat", this.City.storage.get("wheat") - 1)
-                    this.City.storage.set("recruits1", this.City.storage.get("recruits1") + 4)
+                    this.storage.set("wheat", this.storage.get("wheat") - 1)
+                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
                 }
                  break;
             case 2:
-                if(this.City.money < this.lvl * 0.5){
-                    console.log(`Не хватает денег для солдат в ${this.name}, милорд`)
-                }
-                else{
-                    this.money += this.lvl * 0.5
-                    this.City.money -= this.lvl * 0.5
-                }
                 if (this.storage.get("wheat") < 1) {
-                    this.pre_purchase
+                    console.log(`солдатам не хватает еды в ${this.name} 4 солдата не хотят воевать, милорд`)
                 }
                 else {
                     console.log(`Лагерь солдат ${this.name} произвел 4 солдата, милорд`)
-                    this.storage.set("wheat", this.City.storage.get("wheat") - 1)
-                    this.City.storage.set("recruits1", this.City.storage.get("recruits1") + 4)
+                    this.storage.set("wheat", this.storage.get("wheat") - 1)
+                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
                 }
                 break;                
             case 3:
-                if(this.City.money < this.lvl * 0.5){
-                    console.log(`Не хватает денег для шевалье в ${this.name}, милорд`)
-                }
-                else{
-                    this.money += this.lvl * 0.5
-                    this.City.money -= this.lvl * 0.5
-                }
                 if (this.storage.get("wheat") < 1) {
-                    this.pre_purchase
+                    console.log(`швалям не хватает еды в ${this.name} 4 швали не хотят воевать, милорд`)
                 }
                 else {
                     console.log(`замок швалей ${this.name} произвел 4 швали, милорд`)
-                    this.storage.set("wheat", this.City.storage.get("wheat") - 1)
-                    this.City.storage.set("recruits4", this.City.storage.get("recruits4") + 4)
+                    this.storage.set("wheat", this.storage.get("wheat") - 1)
+                    this.city.storage.set("recruits4", this.city.storage.get("recruits4") + 4)
                 }
                 break;
             default:
