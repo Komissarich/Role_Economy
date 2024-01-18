@@ -283,7 +283,7 @@ class Militarycamp extends Household{
                 break;                
             case 3:
                 if (this.City.storage.get("wheat") < 1 || this.City.money < this.lvl * 0.5) {
-                    console.log(`Не хватает еды или денег для ополчения в ${this.name}, милорд`)
+                    console.log(`Не хватает еды ополчения в ${this.name}, милорд`)
                 }
                 else {
                     console.log(`Лагерь ополчения ${this.name} произвел 4 суперсолдата(переименовать), милорд`)                        
