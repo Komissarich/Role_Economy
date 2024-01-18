@@ -1,13 +1,25 @@
 console.log("111111111")
 
 const resources = new Map([
-["wheat", 100],
-["wood", 200],
-["iron", 500],
-["ammunition", 2000],
-["stones", 200],
-])
-
+    ["materials", 100],
+    ["wheat", 100],
+    ["meat", 175],
+    ["leather", 75],
+    ["ore", 100],
+    ["goods", 300],
+    ["rare_materials", 300],
+    ["precious_materials", 300],
+    ["delicacy", 300],
+    ["livestock", 300],
+    ["light_equipment", 300],
+    ["instrument", 300],
+    ["jewelry", 500],
+    ["church_goods", 500],
+    ["horses", 500],
+    ["ammunition", 500],
+    ["heavy_equipment", 500],
+    ]) 
+    
 
 class Country{
 
@@ -27,11 +39,13 @@ class Country{
 }
 
 class Market {
-    constructor() {
-
+    constructor(inventory) {
+        this.inventory = inventory
     }
 
-    sell_request() {
+    
+    
+    buy_request(good) {
         
     }
 }
@@ -51,7 +65,7 @@ class City {
 
 class Household {
 
-    constructor(storage, money, city, lvl) {
+    constructor(storage, money, city, lvl, consumption_list, wishlist) {
         this.storage = storage
         this.money = money
         this.city = city
@@ -59,6 +73,8 @@ class Household {
         this.hunger = 0
         this.lvl = lvl
         this.initiative = 1
+        this.consumption_list = consumption_list
+        this.wishlist = wishlist
     }
 
     pre_purchase() {}
@@ -70,7 +86,7 @@ class Household {
         this.storage.set("wheat", this.storage.get("wheat") - (1 * lvl))
     }
 
-    sell() {
+    sell(a) {
         
     }
 
@@ -81,7 +97,7 @@ class Household {
     set_name() {}
 
     buy(resource, offer_price) {
-        const transaction = new Object()
+        transaction = this.city.market.buy_requesasd
         transaction.result = true
         transaction.offer_price = 200
         return transaction
@@ -125,25 +141,24 @@ class Farming extends Household {
         this.name = "Farming_" + this.city.name + "_" + x
     }
 
+    fail_buy(good) {
+        console.log(`Фермерское хозяйство ${this.name}  не смогло купить ${good}, милорд`)
+        if (good == "wheat") {
+            this.hunger += 1
+            if (this.hunger == 2) {
+                this.rebellion()
+            }
+            if (this.hunger == 3) {
+                this.death()
+            }
+        }
+    }
+
     pre_purchase() {
-        if (this.storage.get("wheat") == 0) {
-            console.log(`Фермерское хозяйство ${this.name} пытается купить пшеницу, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.offer_price < this.money) {
-                console.log(`Фермерское хозяйство ${this.name} успешно купило пшеницу, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.offer_price
-            }
-            else {
-                console.log(`Фермерское хозяйство ${this.name} не смогло купить пшеницу, милорд`)
-                this.hunger += 1
-                if (this.hunger == 2) {
-                    this.rebellion()
-                }
-                if (this.hunger == 3) {
-                    this.death()
-                }
-            }
+        for(let i = 0; i < this.consumption_list.length; i ++) {
+            good = this.consumption_list[i]
+            trans = this.buy(good)
+            if (trans.)
         }
     }
 
