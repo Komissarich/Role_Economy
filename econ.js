@@ -231,7 +231,7 @@ class Livestock extends Household {
 
 
 }
-class Militarycamp extends Household{
+class Military_camp extends Household{
     constructor(){
         super()
         
@@ -244,7 +244,7 @@ class Militarycamp extends Household{
                x += 1 
             }
         }
-        this.name = "Militarycamp" + this.city.name + "_" + x
+        this.name = "Military camp" + this.city.name + "_" + x
     }
     pre_purchase() {
         if(this.сity.money < this.lvl * 0.5){
@@ -285,7 +285,7 @@ class Militarycamp extends Household{
                 else {
                     console.log(`Лагерь ополчения ${this.name} произвел 4 ополченца, милорд`)
                     this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
+                    this.city.storage.set("recruits_1", this.city.storage.get("recruits_1") + 4)
                 }
                 break;
             case 1:
@@ -295,7 +295,7 @@ class Militarycamp extends Household{
                 else {
                     console.log(`Лагерь воинов ${this.name} произвел 4 воина, милорд`)
                     this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
+                    this.city.storage.set("recruits_2", this.city.storage.get("recruits_2") + 4)
                 }
                  break;
             case 2:
@@ -305,7 +305,7 @@ class Militarycamp extends Household{
                 else {
                     console.log(`Лагерь солдат ${this.name} произвел 4 солдата, милорд`)
                     this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits1", this.city.storage.get("recruits1") + 4)
+                    this.city.storage.set("recruits_3", this.city.storage.get("recruits_3") + 4)
                 }
                 break;                
             case 3:
@@ -315,11 +315,8 @@ class Militarycamp extends Household{
                 else {
                     console.log(`замок швалей ${this.name} произвел 4 швали, милорд`)
                     this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits4", this.city.storage.get("recruits4") + 4)
+                    this.city.storage.set("recruits_4", this.city.storage.get("recruits_4") + 4)
                 }
-                break;
-            default:
-                console.log(`неверно указан уровень постройки ${this.name}`)
                 break;
         }
     }
