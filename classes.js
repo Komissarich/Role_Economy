@@ -64,8 +64,7 @@ class City {
 
 
 class Household {
-
-    constructor(storage, money, city, lvl, consumption_list, wishlist) {
+    constructor(storage, money, city, lvl, consumption_map, wishlist) {
         this.storage = storage
         this.money = money
         this.city = city
@@ -73,11 +72,33 @@ class Household {
         this.hunger = 0
         this.lvl = lvl
         this.initiative = 1
-        this.consumption_list = consumption_list
+        this.consumption_map = consumption_map
         this.wishlist = wishlist
     }
 
-    pre_purchase() {}
+    set_name() {}
+
+    consumption_purchase() {
+        for(let good of this.consumption_map.keys) {
+            for (let j = 0; j < this.consumption_map.get(good); j++) {
+                transaction = this.buy(good)
+                if (transaction.result && transaction.offer_price <= this.money) {
+                    this.storage.set(good, this.storage.get(good) + 1)
+                    this.money -= transaction.offer_price
+                }
+                else this.fail_buy(good)
+            }
+        }
+    }
+
+    fail_buy(good) {
+        console.log(`${this.name} не смогло купить ${good}, милорд`)
+        if (good == "wheat") {
+            this.hunger += 1
+            if (this.hunger == 2) this.rebellion()
+            if (this.hunger == 3) this.death()
+        }
+    }
 
     production() {}
 
@@ -86,24 +107,19 @@ class Household {
         this.storage.set("wheat", this.storage.get("wheat") - (1 * lvl))
     }
 
-    sell(a) {
-        
-    }
-
     upgrade() {
         console.log(`${this.name} улучшается`)
     }
 
-    set_name() {}
-
     buy(resource, offer_price) {
-        transaction = this.city.market.buy_requesasd
+        let transaction = this.city.market.buy_request(resource)
         transaction.result = true
-        transaction.offer_price = 200
+        transaction.offer_price = 100
         return transaction
     }
 
     rebellion() {
+        
         console.log(`В ${this.name} восстание!`)
     }
     
@@ -141,30 +157,28 @@ class Farming extends Household {
         this.name = "Farming_" + this.city.name + "_" + x
     }
 
-    fail_buy(good) {
-        console.log(`Фермерское хозяйство ${this.name}  не смогло купить ${good}, милорд`)
-        if (good == "wheat") {
-            this.hunger += 1
-            if (this.hunger == 2) {
-                this.rebellion()
-            }
-            if (this.hunger == 3) {
-                this.death()
-            }
-        }
-    }
+   
 
-    pre_purchase() {
-        for(let i = 0; i < this.consumption_list.length; i ++) {
-            good = this.consumption_list[i]
-            trans = this.buy(good)
-            if (trans.)
-        }
+    consumption_purchase() {
+        
     }
 
     production() {
-        console.log(`Фермерское хозяйство ${this.name} произвело 3 пшеницы, милорд`)
-        this.storage.set("wheat", this.storage.get("wheat") + 3)
+        switch(this.lvl) {
+        case 0:
+            console.log(`Фермерская община ${this.name} произвела 3 пшеницы, милорд`)
+            this.storage.set("wheat", this.storage.get("wheat") + 3)
+            break
+        case 1:
+            console.log(`Кулачество ${this.name} произвело 4 пшеницы, милорд`)
+            this.storage.set("wheat", this.storage.get("wheat") + 4)
+            break
+        case 2:
+            console.log(`Деревня ${this.name} произвела 5 пшеницы и 1 скот, милорд`)
+            this.storage.set("wheat", this.storage.get("wheat") + 5)
+            this.storage.set("livestock", this.storage.get("livestock") + 1)
+            break
+        }
     }
 
     consumption() {
