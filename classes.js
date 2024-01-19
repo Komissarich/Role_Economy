@@ -64,7 +64,7 @@ class City {
 
 
 class Household {
-    constructor(storage, money, city, lvl, consumption_map, wishlist) {
+    constructor(storage, money, city, lvl, consumption_map, wish_map, spending_map, production_map) {
         this.storage = storage
         this.money = money
         this.city = city
@@ -73,7 +73,9 @@ class Household {
         this.lvl = lvl
         this.initiative = 1
         this.consumption_map = consumption_map
-        this.wishlist = wishlist
+        this.wish_map = wish_map
+        this.spending_map = spending_map
+        this.production_map = production_map
     }
 
     set_name() {}
@@ -99,8 +101,20 @@ class Household {
             if (this.hunger == 3) this.death()
         }
     }
-
-    production() {}
+    //Example of spending_map
+    // const production_map = [
+	//new Map(["iron", 
+	//	new Map(["wheat", 2],
+	//		["ore", 3])
+	//       ]),
+    //	new Map(["equipment",
+	//	new Map(["wheat", 2],
+    //			["ore", 2])]) 
+    //]
+    //
+    production() {
+        
+    }
 
     consumption() {
         console.log(`${this.name} кушает пшеницу`)
