@@ -81,10 +81,10 @@ class Household {
     set_name() {}
 
     consumption_purchase() {
-        for(let good of this.consumption_map.keys) {
-            for (let j = 0; j < this.consumption_map.get(good); j++) {
+        for(good of this.consumption_map.keys()) {
+            for (j = 0; j < this.consumption_map.get(good); j++) {
                 transaction = this.buy(good)
-                if (transaction.result && transaction.offer_price <= this.money) {
+                if (transaction.result == true && transaction.offer_price <= this.money) {
                     this.storage.set(good, this.storage.get(good) + 1)
                     this.money -= transaction.offer_price
                 }
@@ -95,25 +95,36 @@ class Household {
 
     fail_buy(good) {
         console.log(`${this.name} не смогло купить ${good}, милорд`)
-        if (good == "wheat") {
-            this.hunger += 1
-            if (this.hunger == 2) this.rebellion()
-            if (this.hunger == 3) this.death()
-        }
+        
     }
+    
     //Example of spending_map
     // const spending_map = [
     //    new Map([["iron", 
-     //         new Map([["wheat", 2],
+    //         new Map([["wheat", 2],
     //                  ["ore", 3]])
     //          ]]),
     //    new Map([["equipment",
-   //           new Map([["wheat", 2],
-   //                  ["ore", 2]])
-    //          ]])
-                  
-   //   ]
+    //           new Map([["wheat", 2],
+    //                  ["ore", 2]])
+    //          ]])    
+    //   ]
     //
+    consumption() {
+        for (good of this.consumption_map.keys()) {
+            if (this.storage.get(good) >= this.consumption_map.get(good)) {
+                this.storage.set(good, this.storage.get(good) - this.consumption_map.get(good))
+            }
+            else {
+                if (good == "wheat") {
+                    this.hunger += 1
+                    if (this.hunger == 2) this.rebellion()
+                    if (this.hunger == 3) this.death()
+                }
+            }
+        }
+    }
+
     production() {
         for (good of this.production_map.keys()) {
             for (i = 0; i < this.production_map.get(good); i++) {
@@ -126,7 +137,6 @@ class Household {
                         for (resource_to_spend of this.spending_map[j].get(good).keys()) {
                       //      console.log(resource_to_spend)
                             if (storage.get(resource_to_spend) >= this.spending_map[j].get(good).get(resource_to_spend)) {
-                            //    console.log(storage)
                                 storage.set(resource_to_spend, this.storage.get(resource_to_spend) - this.spending_map[j].get(good).get(resource_to_spend))
                            //     console.log(storage)
                             }
@@ -141,8 +151,6 @@ class Household {
                 }
                 else {
                    // console.log("FAILED", good)
-                   // console.log(thisstorage)
-                  //  console.log("bb", backup)
                     storage = backup
                   //  console.log(storage)
                 }
@@ -150,10 +158,7 @@ class Household {
         }
     }
 
-    consumption() {
-        console.log(`${this.name} кушает пшеницу`)
-        this.storage.set("wheat", this.storage.get("wheat") - (1 * lvl))
-    }
+    
 
     upgrade() {
         console.log(`${this.name} улучшается`)
