@@ -1,17 +1,26 @@
 console.log("111111111")
-
 const resources = new Map([
-["wheat", 100],
-["wood", 200],
-["iron", 500],
-["ammunition", 2000],
-["stones", 200],
-])
-
-
+    ["materials", 100],
+    ["wheat", 100],
+    ["meat", 175],
+    ["leather", 75],
+    ["ore", 100],
+    ["goods", 300],
+    ["rare_materials", 300],
+    ["precious_materials", 300],
+    ["delicacy", 300],
+    ["livestock", 300],
+    ["light_equipment", 300],
+    ["instrument", 300],
+    ["jewelry", 500],
+    ["church_goods", 500],
+    ["horses", 500],
+    ["ammunition", 500],
+    ["heavy_equipment", 500],
+    ]) 
+    
 class Country{
-
-    constructor(name, player_name, color, cities, player_storage, character_list, armies, culture, prestige, religions, storage, money) {
+    constructor(name, player_name, color, cities, player_storage, character_list, armies, culture, prestige, religions) {
         this.name = name
         this.player_name = player_name
         this.color = color
@@ -22,22 +31,18 @@ class Country{
         this.culture = culture
         this.prestige = prestige
         this.religions = religions
-        this.storage = storage
-        this.money = money
     }
-
 }
-
 class Market {
-    constructor() {
-
+    constructor(inventory) {
+        this.inventory = inventory
     }
-
-    sell_request() {
+    
+    
+    buy_request(good) {
         
     }
 }
-
 class City {
     constructor(name, coords, households, buildings) {
         this.name = name
@@ -46,14 +51,10 @@ class City {
         this.buildings = buildings
         this.market = new Market()
     }
-
     
 }
-
-
 class Household {
-
-    constructor(storage, money, city, lvl) {
+    constructor(storage, money, city, lvl, consumption_map, wish_map, spending_map, production_map) {
         this.storage = storage
         this.money = money
         this.city = city
@@ -61,35 +62,104 @@ class Household {
         this.hunger = 0
         this.lvl = lvl
         this.initiative = 1
+        this.consumption_map = consumption_map
+        this.wish_map = wish_map
+        this.spending_map = spending_map
+        this.production_map = production_map
+    }
+    set_name() {}
+
+    consumption_purchase() {
+        for(good of this.consumption_map.keys()) {
+            for (j = 0; j < this.consumption_map.get(good); j++) {
+                transaction = this.buy(good)
+                if (transaction.result == true && transaction.offer_price <= this.money) {
+                    this.storage.set(good, this.storage.get(good) + 1)
+                    this.money -= transaction.offer_price
+                }
+                else this.fail_buy(good)
+            }
+        }
     }
 
-    pre_purchase() {}
+    fail_buy(good) {
+        console.log(`${this.name} не смогло купить ${good}, милорд`)
 
-    production() {}
+    }
 
+    //Example of spending_map
+    // const spending_map = [
+    //    new Map([["iron", 
+    //         new Map([["wheat", 2],
+    //                  ["ore", 3]])
+    //          ]]),
+    //    new Map([["equipment",
+    //           new Map([["wheat", 2],
+    //                  ["ore", 2]])
+    //          ]])    
+    //   ]
+    //
     consumption() {
-        console.log(`${this.name} кушает пшеницу`)
-        this.storage.set("wheat", this.storage.get("wheat") - (1 * lvl))
+        for (good of this.consumption_map.keys()) {
+            if (this.storage.get(good) >= this.consumption_map.get(good)) {
+                this.storage.set(good, this.storage.get(good) - this.consumption_map.get(good))
+            }
+            else {
+                if (good == "wheat") {
+                    this.hunger += 1
+                    if (this.hunger == 2) this.rebellion()
+                    if (this.hunger == 3) this.death()
+                }
+            }
+        }
     }
 
-    sell() {
-        
+    production() {
+        for (good of this.production_map.keys()) {
+            for (i = 0; i < this.production_map.get(good); i++) {
+               //console.log("NOW MAKING", good)
+                is_productionable = true
+                let backup = new Map(storage)
+               // console.log("BACKUP", backup)
+                for (j = 0; j < this.spending_map.length; j++) {
+                    if (spending_map[j].get(good) != undefined) {
+                        for (resource_to_spend of this.spending_map[j].get(good).keys()) {
+                      //      console.log(resource_to_spend)
+                            if (storage.get(resource_to_spend) >= this.spending_map[j].get(good).get(resource_to_spend)) {
+                                storage.set(resource_to_spend, this.storage.get(resource_to_spend) - this.spending_map[j].get(good).get(resource_to_spend))
+                           //     console.log(storage)
+                            }
+                            else {
+                                is_productionable = false
+                            }
+                        }
+                    }
+                }
+                if (is_productionable == true) {
+                  //  console.log("SUCCESFULLY", good)
+                }
+                else {
+                   // console.log("FAILED", good)
+                    storage = backup
+                  //  console.log(storage)
+                }
+            }
+        }
     }
+
+
 
     upgrade() {
         console.log(`${this.name} улучшается`)
     }
-
-    set_name() {}
-
     buy(resource, offer_price) {
-        const transaction = new Object()
+        let transaction = this.city.market.buy_request(resource)
         transaction.result = true
-        transaction.offer_price = 200
+        transaction.offer_price = 100
         return transaction
     }
-
     rebellion() {
+        
         console.log(`В ${this.name} восстание!`)
     }
     
@@ -97,26 +167,18 @@ class Household {
         console.log(`${this.name} вымерло из-за голода`)
         this.destruction()
     }
-
     destruction() {
         console.log(`${this.name} разрушено`)
     }
 }
-
 class Building {
-
     constructor(type) {
         this.type = type
     }
-
     production() {}
-
     destruction() {}
-
 }
-
 class Farming extends Household {
-
     set_name() {
         let x = 1
         for (let i = 0; i < this.city.households.length; i ++ ) { 
@@ -126,50 +188,10 @@ class Farming extends Household {
         }
         this.name = "Farming_" + this.city.name + "_" + x
     }
-
-    pre_purchase() {
-        if (this.storage.get("wheat") == 0) {
-            console.log(`Фермерское хозяйство ${this.name} пытается купить пшеницу, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.offer_price < this.money) {
-                console.log(`Фермерское хозяйство ${this.name} успешно купило пшеницу, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.offer_price
-            }
-            else {
-                console.log(`Фермерское хозяйство ${this.name} не смогло купить пшеницу, милорд`)
-                this.hunger += 1
-                if (this.hunger == 2) {
-                    this.rebellion()
-                }
-                if (this.hunger == 3) {
-                    this.death()
-                }
-            }
-        }
-    }
-
-    production() {
-        console.log(`Фермерское хозяйство ${this.name} произвело 3 пшеницы, милорд`)
-        this.storage.set("wheat", this.storage.get("wheat") + 3)
-    }
-
-    consumption() {
-       super()
-    }
-
-    sell() {
-        for (let i = this.storage.get("wheat"); i > -1; i = i - 1) {
-            
-        }
-    }
-
-
+   
+    
 }
-
-
 class Livestock extends Household {
-
     set_name() {
         let x = 1
         for (let i = 0; i < this.city.households.length; i ++ ) { 
@@ -179,193 +201,5 @@ class Livestock extends Household {
         }
         this.name = "Livestock_" + this.city.name + "_" + x
     }
-
-    pre_purchase() {
-        if (this.storage.get("wheat") == 0) {
-            console.log(`Скотоводческое хозяйство ${this.name} пытается купить пшеницу для выживания, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.offer_price < this.money) {
-                console.log(`Скотоводческое хозяйство ${this.name} успешно купило пшеницу для выживания, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.offer_price
-            }
-            else {
-                console.log(`Скотоводческое хозяйство ${this.name} не смогло купить пшеницу для выживания, милорд`)
-            }
-        }
-
-        if (this.storage.get("wheat") == 1) {
-            console.log(`Скотоводческое хозяйство ${this.name} пытается купить пшеницу для скота, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.cost < this.money) {
-                console.log(`Скотоводческое хозяйство ${this.name} успешно купило пшеницу для выживания, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.cost
-            }
-            else {
-                console.log(`Скотоводческое хозяйство ${this.name} не смогло купить пшеницу для скота, милорд`)
-            }
-        }
-    }
-
-    production() {
-        if (this.storage.get("wheat") < 1) {
-            console.log(`Не хватает еды для скота в ${this.name}, милорд`)
-        }
-        else {
-            console.log(`Скотоводческое хозяйство ${this.name} произвело 2 скота, милорд`)
-            this.storage.set("wheat", this.storage.get("wheat") - 1)
-            this.storage.set("livestock", this.storage.get("livestock") + 2)
-        }
-        
-        
-    }
-
-    consumption() {
-        super()
-    }
-
-    sell() {
-
-    }
-
-
-}
-class Military_camp extends Household{
-    constructor(){
-        super()
-        
-    }
     
-    set_name() {
-        let x = 1
-        for (let i = 0; i < this.city.households.length; i ++ ) { 
-            if (this.city.households[i] instanceof Military_camp == true) {
-               x += 1 
-            }
-        }
-        this.name = "Military camp" + this.city.name + "_" + x
-    }
-    pre_purchase() {
-        if(this.сity.money < this.lvl * 0.5){
-            console.log(`Не хватает денег для воина в ${this.name}, милорд`)
-        }
-        else{
-            this.money += this.lvl * 0.5
-            this.city.money -= this.lvl * 0.5
-        }
-
-        if (this.storage.get("wheat") == 0) {
-            console.log(`военный домик ${this.name} пытается купить пшеницу, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.offer_price < this.money) {
-                console.log(`военный домик ${this.name} успешно купил пшеницу, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.offer_price
-            }
-            else {
-                console.log(`Военный домик ${this.name} не смог купить пшеницу, милорд`)
-                this.hunger += 1
-                if (this.hunger == 2) {
-                    this.rebellion()
-                }
-                if (this.hunger == 3) {
-                    this.death()
-                }
-            }
-        }
-    }
-    
-    production(){
-        switch (this.lvl) {
-            case 0:
-                if (this.city.storage.get("wheat") < 1) {
-                    console.log(`ополченцам не хватает еды в ${this.name} 4 ополченца не хотят воевать, милорд`)
-                }
-                else {
-                    console.log(`Лагерь ополчения ${this.name} произвел 4 ополченца, милорд`)
-                    this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits_1", this.city.storage.get("recruits_1") + 4)
-                }
-                break;
-            case 1:
-                if (this.storage.get("wheat") < 1) {
-                    console.log(`воинам не хватает еды в ${this.name} 4 воина не хотят воевать, милорд`)
-                }
-                else {
-                    console.log(`Лагерь воинов ${this.name} произвел 4 воина, милорд`)
-                    this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits_2", this.city.storage.get("recruits_2") + 4)
-                }
-                 break;
-            case 2:
-                if (this.storage.get("wheat") < 1) {
-                    console.log(`солдатам не хватает еды в ${this.name} 4 солдата не хотят воевать, милорд`)
-                }
-                else {
-                    console.log(`Лагерь солдат ${this.name} произвел 4 солдата, милорд`)
-                    this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits_3", this.city.storage.get("recruits_3") + 4)
-                }
-                break;                
-            case 3:
-                if (this.storage.get("wheat") < 1) {
-                    console.log(`швалям не хватает еды в ${this.name} 4 швали не хотят воевать, милорд`)
-                }
-                else {
-                    console.log(`замок швалей ${this.name} произвел 4 швали, милорд`)
-                    this.storage.set("wheat", this.storage.get("wheat") - 1)
-                    this.city.storage.set("recruits_4", this.city.storage.get("recruits_4") + 4)
-                }
-                break;
-        }
-    }
-
 }
-class Holy_households extends Household{
-    constructor(){
-        super()
-        
-    }
-    
-    set_name() {
-        let x = 1
-        for (let i = 0; i < this.city.households.length; i ++ ) { 
-            if (this.city.households[i] instanceof Holy_households == true) {
-               x += 1 
-            }
-        }
-        this.name = "Holy Household" + this.city.name + "_" + x
-    }
-    production() {
-        console.log(`Фермерское хозяйство ${this.name} произвело 3 пшеницы, милорд`)
-        this.storage.set("Holy_time", this.storage.get("Holy_time") + 2)
-        this.storage.set("Scientist_time", this.storage.get("Scientist_time") + this.lvl)
-    }
-    sell() {
-
-    }
-
-    pre_purchase() {
-        if (this.storage.get("wheat") == 0) {
-            console.log(`Священное хозяйство ${this.name} пытается купить пшеницу, милорд`)
-            let trans = this.buy("wheat")
-            if (trans.result == true && trans.offer_price < this.money) {
-                console.log(`Священное хозяйство ${this.name} успешно купило пшеницу, милорд`)
-                this.storage.set("wheat", this.storage.get("wheat") + 1)
-                this.money -= trans.offer_price
-            }
-            else {
-                console.log(`Священное ${this.name} не смогло купить пшеницу, милорд`)
-                this.hunger += 1
-                if (this.hunger == 2) this.rebellion()
-                if (this.hunger == 3) this.death()
-                
-            }
-        }
-    }
-
-
-}
-
-7
