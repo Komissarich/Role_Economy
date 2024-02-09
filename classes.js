@@ -43,11 +43,26 @@ class Market {
         this.inventory = inventory
     }
 
-    
+    make_prices() {
+       for (name of this.storage.keys()) {
+        count_of_goods += this.storage(name)
+       }
+        for (name of resources.keys()) {
+            default_price = resources[name]
+            count = this.inventory.get(name)
+            
+            
+        
+        }
+    }
     
     buy_request(good) {
-        
-    }
+        if(this.inventory.get(good) > 0) {
+            
+        }
+        else {
+            this.inventory.set(good, this.inventory.get(good) - 1)    
+        }
 }
 
 class City {
@@ -64,7 +79,8 @@ class City {
 
 
 class Household {
-    constructor(storage, money, city, lvl, consumption_map, wish_map, spending_map, production_map) {
+    constructor(upgrade_storage, storage, money, city, lvl, consumption_map, wish_map, spending_map, production_map) {
+        this.upgrade_storage = 
         this.storage = storage
         this.money = money
         this.city = city
