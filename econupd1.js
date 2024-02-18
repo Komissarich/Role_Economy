@@ -155,6 +155,12 @@ class Household {
                 }
                 if (is_productionable == true) {
                   //  console.log("SUCCESFULLY", good)
+                  if(wishmap[good] != undefined){
+                    this.storage.set(prodgood, this.storage.get(prodgood) + 1)
+                }
+                else{
+                    this.sell_storage.set(prodgood, this.sell_storage.get(prodgood) + 1)
+                }
                 }
                 else {
                    // console.log("FAILED", good)
