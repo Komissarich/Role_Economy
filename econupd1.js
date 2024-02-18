@@ -61,12 +61,28 @@ class Market {
 }}
 
 class city {
-    constructor(name, coords, households, buildings) {
+    constructor(name, coords, households, buildings, storage) {
         this.name = name
         this.coords = coords
         this.households = households
         this.buildings = buildings
         this.market = new Market()
+        this.storage = storage
+    }
+    kaufen(){
+        for(j = 0; j<this.households.length;j++){
+            for(good of this.households[j].sell_storage.keys()){
+                while(this.households[j].storage_sell.get(good) > 0){
+                    transaction = this.buy(good)
+                    if (transaction.result == true && transaction.offer_price <= this.money) {
+                    this.households[j].storage_sell.set(good, this.storage_sell.get(good) - 1)
+                    this.storage.set(good, this.storage.get(good) + 1)
+                    this.money -= transaction.offer_price
+                    }
+                    else this.fail_buy(good)
+                }
+            }
+        }
     }
     
 }
