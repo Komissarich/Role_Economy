@@ -69,15 +69,16 @@ class city {
         this.market = new Market()
         this.storage = storage
     }
-    city_purchase(){
-        for(j = 0; j<this.households.length;j++){
-            for(good of this.households[j].sell_storage.keys()){
-                while(this.households[j].sell_storage.get(good) > 0){
-                    transaction = this.buy(good)
-                    if (transaction.result == true && transaction.offer_price <= this.money) {
-                        this.households[j].sell_storage.set(good, this.sell_storage.get(good) - 1)
-                        this.storage.set(good, this.storage.get(good) + 1)
-                        this.money -= transaction.offer_price
+
+city_purchase(){
+    for(j = 0; j<this.households.length;j++){
+        for(good of this.households[j].sell_storage.keys()){
+            while(this.households[j].sell_storage.get(good) > 0){
+                transaction = this.buy(good)
+                if (transaction.result == true && transaction.offer_price <= this.money) {
+                    this.households[j].sell_storage.set(good, this.sell_storage.get(good) - 1)
+                    this.storage.set(good, this.storage.get(good) + 1)
+                    this.money -= transaction.offer_price
                     }
                     
                 }
