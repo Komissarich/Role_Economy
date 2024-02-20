@@ -69,13 +69,13 @@ class city {
         this.market = new Market()
         this.storage = storage
     }
-    kommi_idi_nahui(){
+    city_purchase(){
         for(j = 0; j<this.households.length;j++){
-            for(good of this.households[j].storage_sell.keys()){
-                while(this.households[j].storage_sell.get(good) > 0){
+            for(good of this.households[j].sell_storage.keys()){
+                while(this.households[j].sell_storage.get(good) > 0){
                     transaction = this.buy(good)
                     if (transaction.result == true && transaction.offer_price <= this.money) {
-                        this.households[j].storage_sell.set(good, this.storage_sell.get(good) - 1)
+                        this.households[j].sell_storage.set(good, this.sell_storage.get(good) - 1)
                         this.storage.set(good, this.storage.get(good) + 1)
                         this.money -= transaction.offer_price
                     }
@@ -90,7 +90,7 @@ class city {
 
 class Household {
     constructor(sell_storage, storage, money, city, lvl, consumption_map, wish_map, spending_map, production_map) {
-        this.sell_storage = this.sell_storage
+        this.sell_storage = sell_storage
         this.storage = storage
         this.money = money
         this.city = city
@@ -109,7 +109,7 @@ class Household {
             for (j = 0; j < this.consumption_map.get(good); j++) {
                 transaction = this.buy(good)
                 if (transaction.result == true && transaction.offer_price <= this.money) {
-                    this.storage_sell.set(good, this.storage_sell.get(good) + 1)
+                    this.sell_storage.set(good, this.sell_storage.get(good) + 1)
                     this.money -= transaction.offer_price
                 }
             }
@@ -171,10 +171,10 @@ class Household {
                 if (is_productionable == true) {
                   //  console.log("SUCCESFULLY", good)
                   if(wishmap[good] != undefined){
-                    this.storage.set(prodgood, this.storage.get(prodgood) + 1)
+                    this.storage.set(good, this.storage.get(prodgood) + 1)
                 }
                 else{
-                    this.sell_storage.set(prodgood, this.sell_storage.get(prodgood) + 1)
+                    this.sell_storage.set(good, this.sell_storage.get(prodgood) + 1)
                 }
                 }
                 else {
