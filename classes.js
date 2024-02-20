@@ -69,7 +69,7 @@ class city {
         this.market = new Market()
         this.storage = storage
     }
-    kommi_idi_nahui(){
+    city_purrrrchase(){
         for(j = 0; j<this.households.length;j++){
             for(good of this.households[j].storage_sell.keys()){
                 while(this.households[j].storage_sell.get(good) > 0){
