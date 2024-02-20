@@ -1,4 +1,4 @@
-function abc(b) {
+function abc() {
     production_map = new Map([
         ["iron", 2],
         ["equipment", 1]
@@ -9,13 +9,6 @@ function abc(b) {
         ["ore", 9]
     ])
 
-    let consumption_map = new Map([
-        ["wheat", 5],
-        ["ore", 3]
-
-
-
-    ])
 
     const spending_map = [
           new Map([["iron", 
@@ -24,28 +17,50 @@ function abc(b) {
                 ]]),
           new Map([["equipment",
         	    new Map([["wheat", 5],
-        			    ["ore", 6]])
+        			    ["ore", 1]])
                 ]])
-                    
+
         ]
 
-         
-            for (good of consumption_map.keys()) {
-                if (storage.get(good) >= consumption_map.get(good)) {
-                    storage.set(good, storage.get(good) - consumption_map.get(good))
-                }
-                else {
-                    if (good == "wheat") {
-                        this.hunger += 1
-                        if (this.hunger == 2) this.rebellion()
-                        if (this.hunger == 3) this.death()
+    for (good of production_map.keys()) {
+        for (i = 0; i < production_map.get(good); i++) {
+           console.log("NOW MAKING", good)
+            is_productionable = true
+            let backup = new Map(storage)
+            console.log("BACKUP", backup)
+            for (j = 0; j < spending_map.length; j++) {
+                if (spending_map[j].get(good) != undefined) {
+                    for (resource_to_spend of spending_map[j].get(good).keys()) {
+                        console.log(resource_to_spend)
+                        if (storage.get(resource_to_spend) >= spending_map[j].get(good).get(resource_to_spend)) {
+                            console.log(storage)
+                            storage.set(resource_to_spend, storage.get(resource_to_spend) - spending_map[j].get(good).get(resource_to_spend))
+                            console.log(storage)
+                        }
+                        else {
+                            is_productionable = false
+                        }
                     }
                 }
-         }
-         console.log(storage)
-        
-        
+            }
+            if (is_productionable == true) {
+                console.log("SUCCESFULLY", good)
+                if (!storage.has(good)) {
+                    storage.set(good, 1)
+                }
+                else{
+                    storage.set(good, storage.get(good) + 1)
+                    
+                }
+            }
+            else {
+                console.log("FAILED", good)
+                storage = backup
+            }
+            console.log(storage)
+        }
+    }
+
 }
 
-
-abc(10)
+abc()
