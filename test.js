@@ -1,3 +1,5 @@
+
+
 function abc() {
     production_map = new Map([
         ["iron", 2],
@@ -21,6 +23,32 @@ function abc() {
                 ]])
 
         ]
+
+// Spending map at json        
+// {
+//     "items": [
+//         {
+//             "iron": [
+//                 {
+//                     "wheat": 2
+//                 },
+//                 {
+//                     "ore": 3
+//                 }
+//             ]
+//         },
+//         {
+//             "equipment": [
+//                 {
+//                     "wheat": 3
+//                 },
+//                 {
+//                     "ore": 5
+//                 }
+//             ]
+//         }
+//     ]
+// }
 
     for (good of production_map.keys()) {
         for (i = 0; i < production_map.get(good); i++) {

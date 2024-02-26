@@ -1,5 +1,7 @@
 console.log("111111111")
 
+const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname') 
+
 const resources = new Map([
     ["materials", 100],
     ["wheat", 100],
@@ -35,7 +37,6 @@ class Country{
         this.prestige = prestige
         this.religions = religions
     }
-
 }
 
 class Market {
@@ -63,6 +64,7 @@ class Market {
         else {
             this.inventory.set(good, this.inventory.get(good) - 1)    
         }
+}
 }
 
 class City {

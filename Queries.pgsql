@@ -1,0 +1,1 @@
+SELECT *, pg_tablespace_location(oid) FROM pg_tablespace;
