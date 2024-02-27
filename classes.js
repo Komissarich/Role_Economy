@@ -57,7 +57,7 @@ class Market {
         }
     }
     
-    buy_request(good) {
+    buy_request(good, money) {
         if(this.inventory.get(good) > 0) {
             
         }
@@ -183,7 +183,7 @@ class Household {
     }
 
     buy(resource, offer_price) {
-        let transaction = this.city.market.buy_request(resource)
+        let transaction = this.city.market.buy_request(resource, this.money)
         transaction.result = true
         transaction.offer_price = 100
         return transaction
