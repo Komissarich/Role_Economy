@@ -34,8 +34,9 @@ class Country{
     }
 }
 class Market {
-    constructor(inventory) {
+    constructor(inventory, price_map) {
         this.inventory = inventory
+        this.price_map = price_map
     }
 
     make_prices() {
@@ -45,22 +46,28 @@ class Market {
         for (name of resources.keys()) {
             default_price = resources[name]
             count = this.inventory.get(name)
-
-
-
+            
+            
+        
         }
     }
-
-    buy_request(good) {
-        if(this.inventory.get(good) > 0) {
-
+    
+    buy_request(good, money) {
+        if(this.inventory.get(good) > 0 && money >= this.price_map.get(good)) {
+            transaction.result = true
+            this.inventory.set(good, this.inventory.get(good) - 1)  
         }
-        else {
-            this.inventory.set(good, this.inventory.get(good) - 1)    
+        else if (money < this.price_map.get(good)){
+            transaction.result = false
         }
-}}
+        else if (this.inventory.get(good) <= 0){
+            transaction.result = false
+            this.inventory.set(good, this.inventory.get(good) - 1)  
+        }
+}
+}
 
-class city {
+class City {
     constructor(name, coords, households, buildings, storage) {
         this.name = name
         this.coords = coords
@@ -76,9 +83,10 @@ city_purchase(){
             while(this.households[j].sell_storage.get(good) > 0){
                 transaction = this.buy(good)
                 if (transaction.result == true && transaction.offer_price <= this.money) {
-                    this.households[j].sell_storage.set(good, this.sell_storage.get(good) - 1)
+                    this.households[j].sell_storage.set(good, this.households[j].sell_storage.get(good) - 1)
                     this.storage.set(good, this.storage.get(good) + 1)
                     this.money -= transaction.offer_price
+                    this.households[j].money += transaction.offer_price
                     }
                     
                 }
@@ -187,8 +195,7 @@ class Household {
         console.log(`${this.name} улучшается`)
     }
     buy(resource, offer_price) {
-        let transaction = this.city.market.buy_request(resource)
-        transaction.result = true
+        let transaction = this.city.market.buy_request(resource, this.money, offer_price)
         transaction.offer_price = 100
         return transaction
     }
