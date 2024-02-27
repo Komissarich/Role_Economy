@@ -34,7 +34,8 @@ class Country{
     }
 }
 class Market {
-    constructor(inventory, price_map) {
+    transaction = {result:false, message: ""}
+    constructor(inventory, price_map,transaction) {
         this.inventory = inventory
         this.price_map = price_map
     }
@@ -54,14 +55,14 @@ class Market {
     
     buy_request(good, money) {
         if(this.inventory.get(good) > 0 && money >= this.price_map.get(good)) {
-            transaction.result = true
+            transaction = true
             this.inventory.set(good, this.inventory.get(good) - 1)  
         }
         else if (money < this.price_map.get(good)){
-            transaction.result = false
+            transaction = false
         }
         else if (this.inventory.get(good) <= 0){
-            transaction.result = false
+            transaction = false
             this.inventory.set(good, this.inventory.get(good) - 1)  
         }
 }
@@ -116,8 +117,8 @@ class Household {
     consumption_purchase() {
         for(good of this.consumption_map.keys()) {
             for (j = 0; j < this.consumption_map.get(good); j++) {
-                transaction = this.buy(good)
-                if (transaction.result == true && transaction.offer_price <= this.money) {
+                this.buy(good)
+                if (this.city.market.transaction == true && transaction.offer_price <= this.money) {
                     this.sell_storage.set(good, this.sell_storage.get(good) + 1)
                     this.money -= transaction.offer_price
                 }
@@ -194,8 +195,8 @@ class Household {
     upgrade() {
         console.log(`${this.name} улучшается`)
     }
-    buy(resource, offer_price) {
-        let transaction = this.city.market.buy_request(resource, this.money, offer_price)
+    buy(resource) {
+        let transaction = this.city.market.buy_request(resource, this.money)
         transaction.offer_price = 100
         return transaction
     }
