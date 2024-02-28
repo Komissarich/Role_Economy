@@ -33,39 +33,46 @@ class Country{
         this.religions = religions
     }
 }
+
+class Resource{
+    constructor(name, description, default_price, type, rareness_modifier){
+        this.name = name
+        this.description = description
+        this.default_price = default_price
+        this.type = type
+        this.rareness_modifier = rareness_modifier
+    }
+}
+
 class Market {
-    transaction = {result:false, message: ""}
     count_of_goods = 0
-    constructor(city, price_map) {
+    constructor(city, price_map,storage) {
         this.city = city
-        this.inventory = this.city.storage
+        this.storage = storage
         this.price_map = price_map
     }
 
     make_prices() {
-       for (good of this.inventory.keys()) {
+       for (good of this.storage.keys()) {
         count_of_goods += this.storage(good)
        }
-        for (good of resources.keys()) {
+        for (good of this.price_map.keys()) {
             count = this.inventory.get(good)
-            this.price_map.set(good, resources.get(good)*(count_of_goods/count)*Math.pow(1.05, Math.abs(this.inventory.get(good))))
-
-            
-        
+            this.price_map.set(good, resours.get(good).default_price *Math.pow(resours.get(good).rareness_modifier / (count/count_of_goods), Math.abs(this.inventory.get(good))))
         }
     }
     
     buy_request(good, money) {
         if(this.inventory.get(good) > 0 && money >= this.price_map.get(good)) {
-            transaction = true
-            this.inventory.set(good, this.inventory.get(good) - 1)  
+            this.inventory.set(good, this.inventory.get(good) - 1) 
+            return true 
         }
         else if (money < this.price_map.get(good)){
-            transaction = false
+            return false
         }
         else if (this.inventory.get(good) <= 0){
-            transaction = false
-            this.inventory.set(good, this.inventory.get(good) - 1)  
+            this.inventory.set(good, this.inventory.get(good) - 1) 
+            return false
         }
 }
 }
@@ -87,7 +94,7 @@ city_purchase(){
                 transaction = this.buy(good)
                 if (transaction.result == true && transaction.offer_price <= this.money) {
                     this.households[j].sell_storage.set(good, this.households[j].sell_storage.get(good) - 1)
-                    this.storage.set(good, this.storage.get(good) + 1)
+                    this.storage.set(good, this.market.storage.get(good) + 1)
                     this.money -= transaction.offer_price
                     this.households[j].money += transaction.offer_price
                     }
@@ -119,8 +126,8 @@ class Household {
     consumption_purchase() {
         for(good of this.consumption_map.keys()) {
             for (j = 0; j < this.consumption_map.get(good); j++) {
-                this.buy(good)
-                if (this.city.market.transaction == true && transaction.offer_price <= this.money) {
+                transaction = buy(good)
+                if (transaction == true && transaction.offer_price <= this.money) {
                     this.sell_storage.set(good, this.sell_storage.get(good) + 1)
                     this.money -= transaction.offer_price
                 }
