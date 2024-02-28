@@ -261,7 +261,7 @@ class Farming extends Household {
         }
     }
     consumption() {
-       super()
+       
     }
     sell() {
         for (let i = this.storage.get("wheat"); i > -1; i = i - 1) {
@@ -318,8 +318,13 @@ class Livestock extends Household {
         
     }
     consumption() {
-        super()
+        
     }
     sell() {
     }
 }
+
+module.exports = Resource;
+module.exports = Market;
+module.exports = City;
+module.exports = Household;
