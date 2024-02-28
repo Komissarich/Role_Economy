@@ -35,19 +35,21 @@ class Country{
 }
 class Market {
     transaction = {result:false, message: ""}
-    constructor(inventory, price_map,transaction) {
-        this.inventory = inventory
+    count_of_goods = 0
+    constructor(city, price_map) {
+        this.city = city
+        this.inventory = this.city.storage
         this.price_map = price_map
     }
 
     make_prices() {
-       for (name of this.storage.keys()) {
-        count_of_goods += this.storage(name)
+       for (good of this.inventory.keys()) {
+        count_of_goods += this.storage(good)
        }
-        for (name of resources.keys()) {
-            default_price = resources[name]
-            count = this.inventory.get(name)
-            
+        for (good of resources.keys()) {
+            count = this.inventory.get(good)
+            this.price_map.set(good, resources.get(good)*(count_of_goods/count)*Math.pow(1.05, Math.abs(this.inventory.get(good))))
+
             
         
         }
