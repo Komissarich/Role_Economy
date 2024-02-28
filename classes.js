@@ -46,8 +46,7 @@ class Resource{
 
 class Market {
     count_of_goods = 0
-    constructor(city, price_map,storage) {
-        this.city = city
+    constructor(price_map,storage) {
         this.storage = storage
         this.price_map = price_map
     }
@@ -57,33 +56,34 @@ class Market {
         count_of_goods += this.storage(good)
        }
         for (good of this.price_map.keys()) {
-            count = this.inventory.get(good)
-            this.price_map.set(good, resours.get(good).default_price *Math.pow(resours.get(good).rareness_modifier / (count/count_of_goods), Math.abs(this.inventory.get(good))))
+            count = this.storage.get(good)
+            this.price_map.set(good, resours.get(good).default_price / (count/count_of_goods) *Math.pow(resours.get(good).rareness_modifier, Math.abs(this.inventory.get(good))))
         }
     }
     
     buy_request(good, money) {
-        if(this.inventory.get(good) > 0 && money >= this.price_map.get(good)) {
-            this.inventory.set(good, this.inventory.get(good) - 1) 
+        if(this.storage.get(good) > 0 && money >= this.price_map.get(good)) {
+            this.storage.set(good, this.storage.get(good) - 1) 
             return true 
         }
         else if (money < this.price_map.get(good)){
             return false
         }
-        else if (this.inventory.get(good) <= 0){
-            this.inventory.set(good, this.inventory.get(good) - 1) 
+        else if (this.storage.get(good) <= 0){
+            this.storage.set(good, this.storage.get(good) - 1) 
             return false
         }
 }
 }
 
 class City {
-    constructor(name, coords, households, buildings, storage) {
+    constructor(name, coords, households, buildings, market, money, storage) {
         this.name = name
         this.coords = coords
         this.households = households
         this.buildings = buildings
-        this.market = new Market()
+        this.market = market
+        this.money = money
         this.storage = storage
     }
 
@@ -94,7 +94,7 @@ city_purchase(){
                 transaction = this.buy(good)
                 if (transaction.result == true && transaction.offer_price <= this.money) {
                     this.households[j].sell_storage.set(good, this.households[j].sell_storage.get(good) - 1)
-                    this.storage.set(good, this.market.storage.get(good) + 1)
+                    this.market.storage.set(good, this.market.storage.get(good) + 1)
                     this.money -= transaction.offer_price
                     this.households[j].money += transaction.offer_price
                     }
@@ -206,7 +206,7 @@ class Household {
     }
     buy(resource) {
         let transaction = this.city.market.buy_request(resource, this.money)
-        transaction.offer_price = 100
+        transaction.offer_price = this.market.price_map(resource)
         return transaction
     }
     rebellion() {
