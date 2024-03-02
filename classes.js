@@ -19,6 +19,7 @@ const resources = new Map([
     ["heavy_equipment", 500],
     ]) 
     
+    
 class Country{
     constructor(name, player_name, color, cities, player_storage, character_list, armies, culture, prestige, religions) {
         this.name = name
@@ -46,9 +47,28 @@ class Resource{
 
 class Market {
     count_of_goods = 0
-    constructor(price_map,storage) {
+    
+    constructor(storage,) {
         this.storage = storage
-        this.price_map = price_map
+        this.price_map = new Map([
+            ["materials", 100],
+            ["wheat", 100],
+            ["meat", 175],
+            ["leather", 75],
+            ["ore", 100],
+            ["goods", 300],
+            ["rare_materials", 300],
+            ["precious_materials", 300],
+            ["delicacy", 300],
+            ["livestock", 300],
+            ["light_equipment", 300],
+            ["instrument", 300],
+            ["jewelry", 500],
+            ["church_goods", 500],
+            ["horses", 500],
+            ["ammunition", 500],
+            ["heavy_equipment", 500],
+            ]) 
     }
 
     make_prices() {
@@ -88,10 +108,10 @@ class City {
     }
 
 city_purchase(){
-    for(j = 0; j<this.households.length;j++){
-        for(good of this.households[j].sell_storage.keys()){
+    for(var j = 0; j<this.households.length;j++){
+        for(var good of this.households[j].sell_storage.keys()){
             while(this.households[j].sell_storage.get(good) > 0){
-                transaction = this.buy(good)
+                transaction = this.households[j].buy(good)
                 if (transaction.result == true && transaction.offer_price <= this.money) {
                     this.households[j].sell_storage.set(good, this.households[j].sell_storage.get(good) - 1)
                     this.market.storage.set(good, this.market.storage.get(good) + 1)
@@ -205,8 +225,9 @@ class Household {
         console.log(`${this.name} улучшается`)
     }
     buy(resource) {
-        let transaction = this.city.market.buy_request(resource, this.money)
-        transaction.offer_price = this.market.price_map(resource)
+        var transaction
+        transaction.result = this.city.market.buy_request(resource, this.money)
+        transaction.offer_price = this.city.market.price_map.get(resource)
         return transaction
     }
     rebellion() {
@@ -324,7 +345,43 @@ class Livestock extends Household {
     }
 }
 
-module.exports = Resource;
-module.exports = Market;
-module.exports = City;
-module.exports = Household;
+var wheat = new Resource("wheat", "123", 100, "food", 1.1 )
+var livestock = new Resource("livestock", "321", 300, "shmot", 1.1)
+var resours = new Map([
+    ["wheat", wheat],
+    ["livestock", livestock]
+])
+var beb = new Market(new Map([
+    ["wheat", 1],
+    ["livestock", 1]
+]), new Map([
+    ["wheat", 100],
+    ["livestock", 300]
+]))
+var Bebr = new City("Bebr", "132", [], [], beb, 2000, new Map([
+    ["wheat", 0],
+    ["livestock", 0]
+]) )
+var a = new Household(new Map([
+    ["wheat", 5],
+    ["livestock", 2]
+]), new Map([
+    ["wheat", 0],
+    ["livestock", 0]
+]), 0, Bebr, 1, [],[],[],[])
+var b = new Household(new Map([
+    ["wheat", 6],
+    ["livestock", 1]
+]), new Map([
+    ["wheat", 0],
+    ["livestock", 0]
+]), 0, Bebr, 1, [],[],[],[])
+Bebr.households = Bebr.households || [];
+Bebr.households.push(a)
+Bebr.households.push(b)
+Bebr.city_purchase();
+console.log(beb.storage("wheat"))
+console.log(beb.storage("livestock"))
+beb.make_prices()
+console.log(beb.price_map("wheat"))
+console.log(beb.price_map("livestock"))
